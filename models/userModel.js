@@ -21,9 +21,14 @@ const userSchema = mongoose.Schema(
     email: {
       type: String,
       required: [true, "Add email"],
+      unique: true,
     },
     completedTasks: {
       type: Array,
+    },
+    password: {
+      type: String,
+      required: [true, "Add password"],
     },
   },
   {

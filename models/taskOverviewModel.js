@@ -1,20 +1,12 @@
 const mongoose = require("mongoose");
 
-const taskSchema = mongoose.Schema({
-  title: {
+const taskOverviewSchema = mongoose.Schema({
+  studentId: {
     type: String,
     required: true,
   },
-  sentences: {
+  taskScores: {
     type: Array,
-    required: true,
-  },
-  createdBy: {
-    type: String,
-    required: true,
-  },
-  classes: {
-    type: [Number],
     required: true,
   },
 });
