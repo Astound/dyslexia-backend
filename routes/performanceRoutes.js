@@ -1,21 +1,22 @@
 // performance routes
+const express = require("express");
 
 const {
   registerCompletedTask,
 } = require("../controllers/completedTaskController");
 const {
-  getPerformanceByUserId,
-  getPerformanceByUserIdAndTaskId,
-  getPerformanceByTaskId,
   registerPerformance,
+  getPerformance,
+  getPerformanceById,
 } = require("../controllers/performanceController");
+const router = express.Router();
+
 const { protect } = require("../middleware/authMiddleware");
 
 //GET
 
-router.get("/:id", protect, getPerformanceByUserId);
-router.get("/:id/:task", protect, getPerformanceByUserIdAndTaskId);
-router.get("/:task", protect, getPerformanceByTaskId);
+router.get("/", protect, getPerformance);
+router.get("/:id", protect, getPerformanceById);
 
 //POST
 

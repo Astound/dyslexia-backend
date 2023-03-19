@@ -7,12 +7,12 @@
 // @access  Private
 
 const asyncHandler = require("express-async-handler");
+const { scoreOfSentence, sumOfArray } = require("../helpers/scoreOfTask");
 
 const Performance = require("../models/performanceModel");
 
 const registerPerformance = asyncHandler(async (req, res) => {
   const { user, task, sentenceStats } = req.body;
-
   const performance = await Performance.create({
     user,
     task,
@@ -22,42 +22,55 @@ const registerPerformance = asyncHandler(async (req, res) => {
   res.status(200).json(performance);
 });
 
-// get performance data for a task by user id
-
-// @desc    Get performance data for a task by user id
-// @route   GET /api/performance/:id
-
-const getPerformanceByUserId = asyncHandler(async (req, res) => {
-  const performance = await Performance.find({ user: req.params.id });
-  if (!performance) {
-    res.status(400).json({ message: "No performance data found" });
-  }
-  res.status(200).json(performance);
-});
-
-// get performance data for a task by task id
-
-// @desc    Get performance data for a task by task id
-// @route   GET /api/performance/task/:id
-
-const getPerformanceByTaskId = asyncHandler(async (req, res) => {
-  const performance = await Performance.find({ task: req.params.id });
-  if (!performance) {
-    res.status(400).json({ message: "No performance data found" });
-  }
-  res.status(200).json(performance);
-});
-
-// get performance data for a task by user id and task id
-
-// @desc    Get performance data for a task by user id and task id
-// @route   GET /api/performance/:id/:task
-
-const getPerformanceByUserIdAndTaskId = asyncHandler(async (req, res) => {
-  const performance = await Performance.find({
-    user: req.params.id,
-    task: req.params.task,
+const shortenPerformance = (performance) => {
+  const filteredPerformance = performance.map((p) => {
+    return {
+      user: p.user,
+      task: p.task,
+      sentenceScore: p.sentenceStats.map((stat) => stat.sentenceScore),
+      id: p._id,
+    };
   });
+
+  return filteredPerformance;
+};
+const getPerformance = asyncHandler(async (req, res) => {
+  const query = req.query;
+  if (query.userId && query.taskId) {
+    const performance = await Performance.find({
+      user: query.userId,
+      task: query.taskId,
+    });
+    if (!performance) {
+      res.status(400).json({ message: "No performance data found" });
+    }
+    filteredPerformance = shortenPerformance(performance);
+    res.status(200).json(filteredPerformance);
+  } else if (query.taskId) {
+    const performance = await Performance.find({ task: query.taskId });
+    if (!performance) {
+      res.status(400).json({ message: "No performance data found" });
+    }
+    filteredPerformance = shortenPerformance(performance);
+
+    res.status(200).json(filteredPerformance);
+  } else if (query.userId) {
+    const performance = await Performance.find({ user: query.userId });
+    if (!performance) {
+      res.status(400).json({ message: "No performance data found" });
+    }
+    filteredPerformance = shortenPerformance(performance);
+
+    res.status(200).json(filteredPerformance);
+  } else {
+    const performance = await Performance.find();
+    filteredPerformance = shortenPerformance(performance);
+
+    res.status(200).json(filteredPerformance);
+  }
+});
+const getPerformanceById = asyncHandler(async (req, res) => {
+  const performance = await Performance.findById(req.params.id);
   if (!performance) {
     res.status(400).json({ message: "No performance data found" });
   }
@@ -66,7 +79,6 @@ const getPerformanceByUserIdAndTaskId = asyncHandler(async (req, res) => {
 
 module.exports = {
   registerPerformance,
-  getPerformanceByUserId,
-  getPerformanceByTaskId,
-  getPerformanceByUserIdAndTaskId,
+  getPerformance,
+  getPerformanceById,
 };

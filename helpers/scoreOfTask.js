@@ -53,3 +53,7 @@ const sumOfArray = (array) => {
   });
   return sum;
 };
+
+module.exports = {
+  scoreOfSentence, scoreOfTask , sumOfArray
+}

@@ -15,6 +15,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/user", require("./routes/userRoutes"));
 app.use("/teacher", require("./routes/teacherRoutes"));
 app.use("/tasks", require("./routes/taskRoutes"));
+app.use("/completedTasks", require("./routes/completedTaskRoutes"));
+app.use("/performance", require("./routes/performanceRoutes"));
 // app.use("/chat", require("./routes/chatRoutes"));
 
 app.use(notFound);

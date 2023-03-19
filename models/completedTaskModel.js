@@ -14,6 +14,11 @@ const completedTaskSchema = mongoose.Schema(
       required: true,
       ref: "Task",
     },
+    performanceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Performance",
+    },
     sentences: {
       type: Array,
       required: true,

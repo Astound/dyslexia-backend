@@ -10,8 +10,9 @@ const taskSchema = mongoose.Schema({
     required: true,
   },
   createdBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref : "Teacher"
   },
   classes: {
     type: [Number],

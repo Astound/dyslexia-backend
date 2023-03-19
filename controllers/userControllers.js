@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const generateToken = require("../config/generateToken");
 
 const registerUser = asyncHandler(async (req, res) => {
+  console.log("In register");
   let user = await User.findOne({ email: req.body.email });
   if (user) {
     res.status(400).json({ message: "User already registered" });
