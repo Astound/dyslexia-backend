@@ -1,5 +1,4 @@
 // function to compute score of a sentence out of hundred based on the following parameters: Response time for each word, Number of clicks on the hint button, Number of time audio help taken, Number of wrong input while reading, Number of wrong input while writing
-
 const scoreOfSentence = (time, clicks, audio, wrongRead, wrongWrite) => {
   let score = 0;
   if (time <= 3) {
@@ -31,19 +30,12 @@ const scoreOfSentence = (time, clicks, audio, wrongRead, wrongWrite) => {
   return score;
 };
 
-const scoreOfTask = (sentences) => {
+const scoreOfTask = (sentenceStats) => {
   let score = 0;
-  sentences.forEach((sentence) => {
-    let totalResponseTime = sumOfArray(sentence.responseTimeForEachWord);
-    score += scoreOfSentence(
-      totalResponseTime,
-      sentence.numberOfHintsUsed,
-      sentence.numberOfErrorsWhileReading,
-      sentence.numberOfErrorsWhileWriting,
-      sentence.numberofAudioReplays
-    );
+  sentenceStats.forEach((sentence) => {
+    score += sentence.sentenceScore;
   });
-  return score / sentences.length;
+  return score / sentenceStats.length;
 };
 
 const sumOfArray = (array) => {
@@ -55,5 +47,7 @@ const sumOfArray = (array) => {
 };
 
 module.exports = {
-  scoreOfSentence, scoreOfTask , sumOfArray
-}
+  scoreOfSentence,
+  scoreOfTask,
+  sumOfArray,
+};

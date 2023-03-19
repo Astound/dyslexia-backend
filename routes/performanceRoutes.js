@@ -20,6 +20,6 @@ router.get("/:id", protect, getPerformanceById);
 
 //POST
 
-router.post("/register", protect, registerPerformance, registerCompletedTask);
+router.post("/register", protect, registerPerformance);
 
 module.exports = router;

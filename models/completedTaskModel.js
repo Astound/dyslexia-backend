@@ -19,10 +19,6 @@ const completedTaskSchema = mongoose.Schema(
       required: true,
       ref: "Performance",
     },
-    sentences: {
-      type: Array,
-      required: true,
-    },
     bestScore: {
       type: Number,
       required: true,

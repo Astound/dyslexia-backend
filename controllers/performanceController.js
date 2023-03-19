@@ -1,5 +1,3 @@
-// performance controller
-
 // register performance data for a task by user id
 
 // @desc    Register performance data for a task by user id
@@ -7,10 +5,14 @@
 // @access  Private
 
 const asyncHandler = require("express-async-handler");
-const { scoreOfSentence, sumOfArray } = require("../helpers/scoreOfTask");
+const {
+  scoreOfSentence,
+  sumOfArray,
+  scoreOfTask,
+} = require("../helpers/scoreOfTask");
 
 const Performance = require("../models/performanceModel");
-
+const CompletedTask = require("../models/completedTaskModel");
 const registerPerformance = asyncHandler(async (req, res) => {
   const { user, task, sentenceStats } = req.body;
   const performance = await Performance.create({
@@ -19,7 +21,39 @@ const registerPerformance = asyncHandler(async (req, res) => {
     sentenceStats,
   });
 
-  res.status(200).json(performance);
+  let completedTask = await CompletedTask.find({
+    user: user,
+    task: task,
+  });
+
+  const currentScore = scoreOfTask(sentenceStats);
+  console.log("Current score", currentScore);
+  let status = "Did not beat the previous best";
+  if (completedTask.length == 0) {
+    console.log("In not found completed task");
+    const createdCompletion = await CompletedTask.create({
+      user,
+      task,
+      bestScore: currentScore,
+      performanceId: performance._id,
+    });
+    status = "Completed the task for the first time";
+    completedTask = createdCompletion;
+  } else if (completedTask[0].bestScore < currentScore) {
+    const createdCompletion = await CompletedTask.findOneAndUpdate(
+      completedTask._id,
+      {
+        performanceId: performance._id,
+        bestScore: currentScore,
+      },
+      {
+        new: true,
+      }
+    );
+    status = "Registered new best";
+    completedTask = createdCompletion;
+  }
+  res.status(200).json({ performance, message: status });
 });
 
 const shortenPerformance = (performance) => {
